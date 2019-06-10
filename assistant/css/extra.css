@@ -1,0 +1,139 @@
+html,
+body,
+#map {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+
+#map:-moz-full-screen {
+	height: 100%;
+}
+
+#map:-webkit-full-screen {
+	height: 100%;
+}
+
+#map:-ms-fullscreen {
+	height: 100%;
+}
+
+.ol-zoom {
+	top: 90%;
+}
+
+#map:fullscreen {
+	height: 100%;
+}
+
+/*左上列表*/
+.left-panel {
+	position: absolute;
+	left: 12px;
+	top: 20px;
+}
+
+.panel-group {
+	max-height: 770px;
+	overflow: auto;
+}
+
+.leftMenu {
+	margin: 10px;
+	margin-top: 5px;
+	width:348px;
+}
+
+.leftMenu .panel-heading {
+	font-size: 14px;
+	padding-left: 20px;
+	height: 36px;
+	line-height: 36px;
+	color: #000000;
+	position: relative;
+	cursor: pointer;
+}
+
+.leftMenu .panel-heading span{position:absolute;right:10px;top:12px;}
+/*转成手形图标*/
+.leftMenu .list-group-item {
+	cursor: pointer;
+}
+
+.leftMenu .list-group-item:hover {
+	background: #C4E3F3;
+}
+
+/* 右上定点按钮*/
+.btnIntraction {
+	position: absolute;
+	right: 12px;
+	top: 18px;
+	display: none;
+}
+
+/*popover */
+.popover-content {
+	min-width: 180px;
+}
+p span.coordinate{
+	display: block;
+	word-break: break-all;
+}
+.modifyAddr{
+	margin-left: 4px;
+	color:#3cbaff;
+	cursor: pointer;
+	float: right;
+}
+p textarea{
+	width: 100%;
+}
+.geometryType{
+	position: absolute;
+	right: 12px;
+	top: 18px;
+}
+#checkPanel{
+	position: absolute;
+	right: 8px;
+	top: 88px;
+	padding:12px 8px;
+	background-color: rgba(255,255,220,0.5);
+}
+
+/*measure */
+ .tooltip {
+	position: relative;
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 4px;
+	color: white;
+	padding: 4px 8px;
+	opacity: 0.7;
+	white-space: nowrap;
+}
+.tooltip-measure {
+	opacity: 1;
+	font-weight: bold;
+}
+.tooltip-static {
+	background-color: #ffcc33;
+	color: black;
+	border: 1px solid white;
+}
+.tooltip-measure:before,
+.tooltip-static:before {
+	border-top: 6px solid rgba(0, 0, 0, 0.5);
+	border-right: 6px solid transparent;
+	border-left: 6px solid transparent;
+	content: "";
+	position: absolute;
+	bottom: -6px;
+	margin-left: -7px;
+	left: 50%;
+}
+.tooltip-static:before {
+	border-top-color: #ffcc33;
+}    
