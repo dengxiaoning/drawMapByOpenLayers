@@ -10,7 +10,7 @@ class InteractionHandle{
 				}),
 				stroke: new ol.style.Stroke({
 					color: '#ffcc33',
-					width: 2
+					width: 4
 				}),
 				image: new ol.style.Circle({
 					radius: 7,
@@ -35,7 +35,7 @@ class InteractionHandle{
 	 */
 	addInteractions(drawType='Point') {
 		let source = this.source;
-	
+		let commStyle = new CommonStyle();
 		let draw = new ol.interaction.Draw({
 			source: source,
 			type: drawType
@@ -49,10 +49,25 @@ class InteractionHandle{
 		
 		//添加 snap
 		this.map.addInteraction(snap);
+		let eventhandle = new EventHandle(this.map);
+		let idNum;
+		draw.on('drawend',function(e){
+			idNum=State.drawFeatureAll.length+1;
+			e.feature.setId(idNum);
+			e.feature.set('type',drawType);
+			State.drawFeatureAll.push({idNum:idNum,type:drawType});
+			// 绘制不同样式
+			e.feature.setStyle(function(e) {
+				return commStyle.styleFunctionDefault(drawType,this);
+			})	
+			State.selectedObj = '';
+			State.selectedObj =	e.feature;//赋值便于新增操作，不然要二次点击才能获取id
+		});
 		State.draw = draw;
 		State.snap = snap;
 	//	return [draw, snap];
 	}
+
 	removeInteractions() {
 		this.map.removeInteraction(State.draw);
 		this.map.removeInteraction(State.snap);
@@ -62,5 +77,8 @@ class InteractionHandle{
 	}
 	addVector(){
 		if(this.vector)this.map.addOverlay(this.vector);
+	}
+	getVector(){
+		return this.vector;
 	}
 }

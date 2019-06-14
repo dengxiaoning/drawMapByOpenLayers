@@ -10,6 +10,7 @@
 		<!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
 		<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
 		<script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
+		<script src="assistant/style/commonStyle.js"></script>
 		<script src="assistant/js/eventHandle.js"></script>
 		<script src="assistant/js/vectorHandle.js"></script>
 		<script src="assistant/js/dataHandle.js"></script>
@@ -91,6 +92,7 @@
 				<label class="custom-control-label" for="areaCheck">Area (Polygon)</label>
 			</div>								
 		</form>
+		
 		<script>
 			// 初始化地图
 			var map = new ol.Map({
@@ -106,6 +108,9 @@
 			var cacheVector;
 			// redraw是否重绘popover
 			State.redraw = true;
+			// 缓存所以 feature [{idNum:int,type:string,fObj:feature}] 
+			// idNum记录id,type记录图形类型(由于是多个vector渲染，可根据这个获取相应vector obj)
+			State.drawFeatureAll = [];
 			// 实例化 事件操作
 			var eventHandle = new EventHandle(map);
 			// 创建 mask 
@@ -123,7 +128,11 @@
 
 			// 瓦片图层
 			var raster = new ol.layer.Tile({
-				source:new ol.source.OSM()
+				//source:new ol.source.OSM()
+				source: new ol.source.XYZ({
+					url: 'http://www.google.cn/maps/vt/pb=!1m4!1m3!1i{z}!2i{x}!3i{y}!2m3!1e0!2sm!3i380072576!\
+					3m8!2szh-CN!3scn!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0'
+				})				
 			});
 
 			map.addLayer(raster);
@@ -136,53 +145,11 @@
 				});
 			});
 
-			// 为 popover 的确定 button 绑定事件, 实现坐标数据新增
-			$('body').on('click', 'div.popover button.confirmBtn', (e) => {
-				// 获取input 值
-				var addrName = $(e.currentTarget).siblings('textarea').val();
-				if (!addrName) {
-					alert('请输入地址名称');
-					return false;
-				}
-				// 获取坐标值
-				var coordinateStr = $(e.currentTarget).siblings('span.coordinate').text().split(',');
-				var coordinateInt = [];
-				coordinateInt.push(+coordinateStr[0]);
-				coordinateInt.push(+coordinateStr[1]);
-				DataHandle.addMenuSingle(coordinateInt, addrName);
-
-				var element = popup.getElement();
-				$(element).popover('destroy');
-				State.redraw = true;
-				if (State.draw) State.draw.setActive(true);
-			});
-
-			// 为 popover 的取消 button 绑定事件, 关闭popover
-			$('body').on('click', 'div.popover button.cancelBtn', (e) => {
-				var element = popup.getElement();
-				$(element).popover('destroy');
-				State.redraw = true;
-				if (State.draw) State.draw.setActive(true);
-			});
-
 			// 为 popover 的修改span 绑定事件
 			$('body').on('click', 'div.popover span.modifyAddr', (e) => {
 				$(e.currentTarget).siblings('button.confirmBtn')[0].disabled = false;
 			});
 
-			// 为 popover 的删除按钮 绑定事件
-			$('body').on('click', 'div.popover button.delBtn', (e) => {
-				// 获取坐标值
-				var coordinateStr = $(e.currentTarget).siblings('span.coordinate').text().split(',');
-				var coordinateInt = [];
-				coordinateInt.push(+coordinateStr[0]);
-				coordinateInt.push(+coordinateStr[1]);
-				DataHandle.delElement(coordinateInt);
-				$('#collapseListGroup1').addClass('in');
-				var element = popup.getElement();
-				$(element).popover('destroy');
-				State.redraw = true;
-			});
 		</script>
 	</body>
 </html>

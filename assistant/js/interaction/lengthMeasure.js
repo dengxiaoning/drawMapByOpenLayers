@@ -3,11 +3,11 @@ class LengthMeasure extends Measure {
 		super(map);
 	}
 	removeVector() {
-		$('div.tooltip.lineMeasure').addClass('hidden');
+		$('div.tooltip.Length').addClass('hidden');
 		this.map.removeOverlay(this.vector);
 	}
 	addVector() {
-		$('div.tooltip.lineMeasure').removeClass('hidden');
+		$('div.tooltip.Length').removeClass('hidden');
 		if (this.vector) this.map.addOverlay(this.vector);
 	}
 }

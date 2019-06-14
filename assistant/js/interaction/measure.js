@@ -45,11 +45,11 @@ class Measure extends InteractionHandle {
 		let type,diffFlag;
 		if(drawType === 'Area'){
 			type = 'Polygon';
-			diffFlag = 'areaMeasure';
+			diffFlag = 'Area';
 		}else{
 			type = 'LineString';
 			// 定义 flag 区分 area 与 line popover
-			diffFlag = 'lineMeasure';
+			diffFlag = 'Length';
 		} 
 		
 		this.map.addEventListener('pointermove', this.pointermoverFn);
@@ -104,9 +104,12 @@ class Measure extends InteractionHandle {
 				this.measureTooltip.setPosition(tooltipCoord);
 			});
 		});
-
-		this.draw.on('drawend', () => {
-			this.measureTooltipElement.className = `tooltip tooltip-static ${diffFlag}`;
+		let idNum;
+		this.draw.on('drawend', (e) => {
+			let commStyle = new CommonStyle();
+			idNum=State.drawFeatureAll.length+1;
+			let popFlag = diffFlag+idNum;
+			this.measureTooltipElement.className = `tooltip tooltip-static ${diffFlag} ${popFlag}`;
 			this.measureTooltip.setOffset([0, -7]);
 			// unset sketch
 			this.sketch = null;
@@ -114,6 +117,17 @@ class Measure extends InteractionHandle {
 			this.measureTooltipElement = null;
 			this.createMeasureTooltip();
 			ol.Observable.unByKey(listener);
+			e.feature.setId(idNum);
+			e.feature.set('type',diffFlag);
+			State.drawFeatureAll.push({idNum:popFlag,type:diffFlag,popFlag:popFlag});
+			// 绘制不同样式
+			if(diffFlag === 'Length')
+			e.feature.setStyle(function(e) {
+				return commStyle.styleFunctionDefault(diffFlag,this);	
+			});	
+			
+			State.selectedObj = '';
+			State.selectedObj =	e.feature;//赋值便于新增操作，不然要二次点击才能获取id				
 		});
 	}
 	createMeasureTooltip() {

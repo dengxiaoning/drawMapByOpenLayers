@@ -16,15 +16,23 @@ VectorHandle.prototype = {
 	setFeatureName(featureName) {
 		this.featureName = featureName;
 	},
+	setIdArray(idArray) {
+		this.idArray = idArray;
+	},
+	setLevelArray(levelArray) {
+		this.levelArray = levelArray;
+	},
 	createFeatures() { //构建feature 集合
-		var features = [];
+		let features = [];
 		this.coordinate.forEach((obj, index) => {
 			features.push(new ol.Feature({
 				type: 'icon',
 				name: this.featureName[index],
 				geometry: new ol.geom.Point(obj)
-			}))
+			}));
 			
+			features[index].setId(this.idArray[index]);
+			features[index].set('level',this.levelArray[index]);
 			// features.push(new ol.Feature({
 			// 	type: 'point',
 			// 	name: this.featureName[index],
@@ -34,25 +42,34 @@ VectorHandle.prototype = {
 		return features;
 	},
 	createFeature() { // 构建单个feature
-		var features = [];
-		features.push( new ol.Feature({
-			type: 'icon',
-			name: this.featureName,
-			geometry: new ol.geom.Point(this.coordinate)
-		}));
-		return features;
-	},
-	addFeature(cacheVector){ // 追加单个 feature 到vectore 中
-		var source = cacheVector.getSource();
-		var features = source.getFeatures();
+		let features = [],idNum;
 		features.push(new ol.Feature({
 			type: 'icon',
 			name: this.featureName,
 			geometry: new ol.geom.Point(this.coordinate)
-		}));	
-		 cacheVector.setSource(new ol.source.Vector({
-			features:features
 		}));
+		
+		features[index].setId(idNum);
+		State.drawFeatureAll.push({idNum:idNum,type:'icon'});
+		return features;
+	},
+	addFeature(cacheVector){ // 追加单个 feature 到vectore 中
+		var source = cacheVector.getSource();
+		// var features = source.getFeatures();
+		// features.push(new ol.Feature({
+		// 	type: 'icon',
+		// 	name: this.featureName,
+		// 	geometry: new ol.geom.Point(this.coordinate)
+		// }));	
+		//  cacheVector.setSource(new ol.source.Vector({
+		// 	features:features
+		// }));
+		let fe = new ol.Feature({
+			type: 'icon',
+			name: this.featureName,
+			geometry: new ol.geom.Point(this.coordinate)
+		});
+		source.addFeature(fe);
 	},
 	updateFeate(cacheVector){
 		var source = cacheVector.getSource();
@@ -92,17 +109,13 @@ VectorHandle.prototype = {
 			features: markers
 		});
 
+		var styleFunction = function(feature) {
+			return Conf.setStyleProxy(feature);
+      };
 		// 创建矢量图层
 		var clusters = new ol.layer.Vector({
 			source: source,
-			style: function(feature){
-				var type = feature.get('type');
-				if(type =='icon'){
-					return Conf.getStyle_icon()
-				}else {
-					return Conf.getStyle_circle()
-				}
-			}
+			style:styleFunction
 		});
 		this.map.addOverlay(clusters);
 		//重置 map 中心点
