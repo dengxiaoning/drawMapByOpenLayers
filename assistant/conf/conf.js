@@ -12,7 +12,7 @@ class Conf{
 
 	static setStyleByLevel(level){
 		if(level >= 1 && level <= 3){ // 蓝
-			return Conf.getStyle_icon_changeProp({src: "static/imgs/marker_blue.png"});
+			return Conf.getStyle_icon_changeProp({src: "static/imgs/marker_grey.png"});
 		}else if(level >= 4 && level <= 6){ // 黄
 			return Conf.getStyle_icon_changeProp({src: "static/imgs/marker_yellow.png"});
 		}else{ // 红
